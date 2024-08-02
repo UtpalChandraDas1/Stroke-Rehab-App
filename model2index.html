@@ -4,21 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Right Hand Elbow Flexion Exercise</title>
-  <link rel="stylesheet" href="styles2.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
   <script src="https://unpkg.com/ml5@0.6.0/dist/ml5.min.js"></script>
+  <style>
+    #count-container {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-size: 24px;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+    #resetButton {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Right Hand Elbow Flexion Exercise</h1>
-  <div id="exercise-container">
-    <div id="controls">
-      <button id="resetButton">Reset Count</button>
-      <p>Count: <span id="count">0</span></p>
-    </div>
-    <div id="video-container">
-      <video id="video" width="640" height="480"></video>
-    </div>
-  </div>
-  <script src="sketch2.js"></script>
+  <div id="count-container">Count: <span id="count">0</span></div>
+  <button id="resetButton">Reset</button>
+  <script src="sketch.js"></script>
 </body>
 </html>
