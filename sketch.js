@@ -1,6 +1,8 @@
 let video;
 let poseNet;
 let poses = [];
+let count = 0;
+let stage = 'down';  // Initial stage
 
 function setup() {
   createCanvas(640, 480);
@@ -12,6 +14,9 @@ function setup() {
   poseNet.on('pose', function(results) {
     poses = results;
   });
+
+  // Attach event listener to the reset button
+  document.getElementById('resetButton').addEventListener('click', resetCount);
 }
 
 function modelReady() {
@@ -19,7 +24,10 @@ function modelReady() {
 }
 
 function draw() {
-  image(video, 0, 0, width, height);
+  background(255); // Clear the background
+  translate(width, 0); // Move the origin to the right edge of the canvas
+  scale(-1, 1); // Flip the canvas horizontally
+  image(video, 0, 0, width, height); // Draw the video
 
   if (poses.length > 0) {
     let pose = poses[0].pose;
@@ -36,6 +44,17 @@ function draw() {
       textSize(16);
       textAlign(CENTER, CENTER);
       text(angle.toFixed(2), elbow[0], elbow[1]);
+
+      // Counting logic
+      if (angle > 160) {
+        stage = 'down';
+      }
+      
+      if (angle < 30 && stage === 'down') {
+        stage = 'up';
+        count++;
+        updateCount();
+      }
     } catch (error) {
       console.error(error);
     }
@@ -51,6 +70,16 @@ function calculateAngle(a, b, c) {
     angle = 360.0 - angle;
   }
   return angle;
+}
+
+function updateCount() {
+  document.getElementById('count').innerText = count;
+}
+
+function resetCount() {
+  count = 0;
+  stage = 'down';
+  updateCount();
 }
 
 function drawSkeleton(poses) {
