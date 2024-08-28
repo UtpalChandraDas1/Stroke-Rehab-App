@@ -5,26 +5,141 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ML Models Deployment</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #4CAF50;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        #logos {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 20px;
+            background-color: white;
+            border-bottom: 2px solid #ddd;
+            width: 100%;
+        }
+
+        .logo {
+            margin: 10px;
+            text-align: center;
+        }
+
+        .logo img {
+            max-width: 100px;
+            height: auto;
+        }
+
+        #content {
+            display: flex;
+            width: 100%;
+            padding: 20px;
+        }
+
+        #left-section {
+            flex: 1;
+            max-width: 400px;
+            padding-right: 20px;
+        }
+
+        #right-section {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #goals, #more-info {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+            color: #4CAF50;
+        }
+
+        p, ul {
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        ul {
+            padding-left: 20px;
+            list-style-type: disc;
+        }
+
+        #models {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .model {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 20px;
+            text-align: center;
+            flex: 1 1 calc(33% - 40px);
+            max-width: calc(33% - 40px);
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>Stroke Rehabilitation Application</h1>
     </header>
-
-    <section id="goals">
-        <h2>Project Goals</h2>
-        <ul>
-            <li>AI model-based web application to classify fundus images into normal, dry AMD, and wet AMD disease.</li>
-            <li>Based on the diagnosis results given by the proposed model, the ophthalmologist can create a suitable treatment plan and follow-up duration for the patient.</li>
-            <li>Minimize unnecessary visits for the patient, improving healthcare facilities and reducing indirect costs.</li>
-        </ul>
-    </section>
-
-    <section id="more-info">
-        <h2>More About The Project</h2>
-        <p>Thank you for visiting! If you have any questions about our project, please contact:</p>
-        <p>Professor Dr. Watit Benjapolakul: <a href="mailto:watit.b@chula.ac.th">watit.b@chula.ac.th</a></p>
-    </section>
 
     <section id="logos">
         <div class="logo">
@@ -45,32 +160,49 @@
         </div>
     </section>
 
-    <section id="description">
-        <p>This page demonstrates several real-time machine learning models. Click on the start button next to each model to run it.</p>
-    </section>
+    <div id="content">
+        <div id="left-section">
+            <section id="goals">
+                <h2>Project Goals</h2>
+                <ul>
+                    <li>AI model-based web application to classify fundus images into normal, dry AMD, and wet AMD disease.</li>
+                    <li>Based on the diagnosis results given by the proposed model, the ophthalmologist can create a suitable treatment plan and follow-up duration for the patient.</li>
+                    <li>Minimize unnecessary visits for the patient, improving healthcare facilities and reducing indirect costs.</li>
+                </ul>
+            </section>
 
-    <section id="models">
-        <div class="model">
-            <h2>Left Hand Elbow Flexion</h2>
-            <button onclick="location.href='model1index.html'">Start</button>
+            <section id="more-info">
+                <h2>More About The Project</h2>
+                <p>Thank you for visiting! If you have any questions about our project, please contact:</p>
+                <p>Professor Dr. Watit Benjapolakul: <a href="mailto:watit.b@chula.ac.th">watit.b@chula.ac.th</a></p>
+            </section>
         </div>
-        <div class="model">
-            <h2>Right Hand Elbow Flexion</h2>
-            <button onclick="location.href='model2index.html'">Start</button>
+
+        <div id="right-section">
+            <section id="models">
+                <div class="model">
+                    <h2>Left Hand Elbow Flexion</h2>
+                    <button onclick="location.href='model1index.html'">Start</button>
+                </div>
+                <div class="model">
+                    <h2>Right Hand Elbow Flexion</h2>
+                    <button onclick="location.href='model2index.html'">Start</button>
+                </div>
+                <div class="model">
+                    <h2>Standing Left Hip Flexion</h2>
+                    <button onclick="location.href='model3index.html'">Start</button>
+                </div>
+                <div class="model">
+                    <h2>Standing Right Hip Flexion</h2>
+                    <button onclick="location.href='model4index.html'">Start</button>
+                </div>
+                <div class="model">
+                    <h2>Hand Drawing Post Stroke Exercise</h2>
+                    <button onclick="location.href='model5index.html'">Start</button>
+                </div>
+            </section>
         </div>
-        <div class="model">
-            <h2>Standing Left Hip Flexion</h2>
-            <button onclick="location.href='model3index.html'">Start</button>
-        </div>
-        <div class="model">
-            <h2>Standing Right Hip Flexion</h2>
-            <button onclick="location.href='model4index.html'">Start</button>
-        </div>
-        <div class="model">
-            <h2>Hand Drawing Post Stroke Exercise</h2>
-            <button onclick="location.href='model5index.html'">Start</button>
-        </div>
-    </section>
+    </div>
 
     <footer>
         <p>Innovating the Future with Machine Learning</p>
