@@ -37,9 +37,9 @@ function draw() {
     let pose = poses[0].pose;
 
     // Extract coordinates
-    let hip = pose.rightHip;
-    let knee = pose.rightKnee;
-    let ankle = pose.rightAnkle;
+    let hip = pose.lefttHip;
+    let knee = pose.leftKnee;
+    let ankle = pose.leftAnkle;
 
     if (hip && knee && ankle) {
       // Calculate the angle
