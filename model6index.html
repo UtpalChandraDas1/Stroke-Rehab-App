@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bee Counting & Hitting Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Bee Counting & Hitting Game</h1>
+    <label for="beeNumber">Number of Bees: </label>
+    <input type="number" id="beeNumber" min="1" max="100" value="5">
+    <label for="beeSpeed">Bee Speed (ms): </label>
+    <input type="number" id="beeSpeed" min="500" max="5000" value="2000">
+    <button id="startButton">Start Game</button>
+    <button id="stopButton">Stop Game</button> <!-- New Stop Button -->
+    <p>Score: <span id="score">0</span></p>
+    <p>Reaction Time (ms): <span id="reactionTime">0</span></p>
+    <p>Errors: <span id="errors">0</span></p>
+    <p>Bee Count: <span id="beeCount">0</span></p>
+    <div id="gameArea"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
