@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pose Estimation for Left Hip Flexion</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles33.css">
 </head>
 <body>
     <h1>Pose Estimation Web Application: Left Hip Flexion</h1>
