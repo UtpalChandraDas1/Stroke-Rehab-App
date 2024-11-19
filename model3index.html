@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Knee Extension Exercise</title>
-  <link rel="stylesheet" href="styles3.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-  <script src="https://unpkg.com/ml5@0.6.0/dist/ml5.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pose Estimation for Left Hip Flexion</title>
+    <link rel="stylesheet" href="styles33.css">
 </head>
 <body>
-  <h1>Standing Left Hip Flexion</h1>
-  <div id="exercise-container">
-    <div id="controls">
-      <button id="resetButton">Reset Count</button>
-      <p>Count: <span id="count">0</span></p>
-    </div>
-    <div id="video-container">
-      <video id="video" width="640" height="480"></video>
-    </div>
-  </div>
-  <script src="sketch3.js"></script>
+    <h1>Pose Estimation Web Application: Left Hip Flexion</h1>
+    <video id="video" autoplay playsinline></video>
+    <canvas id="output"></canvas>
+    <button id="reset-button">Reset Counter</button> <!-- New Reset Button -->
+    <audio id="beep-sound" src="beep.mp3"></audio> <!-- Optional beep sound -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+    <script src="script.js"></script>
 </body>
 </html>
