@@ -1,77 +1,52 @@
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 20px;
-}
-
-#logos {
     display: flex;
+    flex-direction: column; /* Column layout to keep the title on top */
+    align-items: center;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+#content-container {
+    display: flex;
+    flex-direction: row; /* Row layout for instructions and video/canvas */
+    align-items: flex-start;
     justify-content: center;
-    flex-wrap: wrap;
-    margin: 20px 0;
+    width: 100%;
 }
 
-.logo {
-    margin: 10px;
-    text-align: center;
+#instructions {
+    width: 300px; /* Set a fixed width for instructions */
+    margin-right: 20px; /* Add space between instructions and the video/canvas */
+    padding: 10px;
+    border: 1px solid #ccc; /* Optional: adds a border around instructions */
+    overflow-y: auto; /* Add scrolling if content overflows */
+    max-height: 80vh; /* Prevents instructions from exceeding screen height */
 }
 
-.logo img {
-    width: 100px;
-    height: 100px;
+#video-container {
+    position: relative;
 }
 
-#description {
-    margin: 20px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+video, canvas {
+    width: 640px;
+    height: 480px;
+    display: block;
 }
 
-#models {
-    margin: 20px;
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid black;
 }
 
-.model {
-    margin: 20px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.model h2 {
-    margin-top: 0;
-}
-
-.model button {
+#reset-button {
+    margin-top: 20px;
     padding: 10px 20px;
     font-size: 16px;
-    color: white;
-    background-color: #4CAF50;
-    border: none;
-    border-radius: 5px;
     cursor: pointer;
-}
-
-.model button:hover {
-    background-color: #45a049;
-}
-
-footer {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
 }
