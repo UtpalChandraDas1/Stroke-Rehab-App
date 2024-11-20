@@ -1,32 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Right Hand Elbow Flexion Exercise</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-  <script src="https://unpkg.com/ml5@0.6.0/dist/ml5.min.js"></script>
-  <style>
-    #count-container {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      color: white;
-      font-size: 24px;
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 5px 10px;
-      border-radius: 5px;
-    }
-    #resetButton {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 18px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pose Estimation with TensorFlow.js</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #content-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            width: 100%;
+        }
+
+        #instructions {
+            width: 300px;
+            margin-right: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        #video-container {
+            position: relative;
+        }
+
+        video, canvas {
+            width: 640px;
+            height: 480px;
+            display: block;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: 1px solid black;
+        }
+
+        #reset-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Flip the video horizontally to create mirror effect */
+        #video {
+            transform: scaleX(-1); /* Flip the video horizontally */
+        }
+    </style>
 </head>
 <body>
-  <div id="count-container">Count: <span id="count">0</span></div>
-  <button id="resetButton">Reset</button>
-  <script src="sketch.js"></script>
+    <h1>Right Hand Elbow Flexion(การงอข้อศอกขวา)</h1>
+    <div id="content-container">
+        <!-- Instructions -->
+        <div id="instructions">
+            <h2>Instructions(คำแนะนำ</h2>
+            <p>Stand in front of the camera so that you can see the entire movement of your arm clearly. Keep your back straight and your shoulders relaxed.(ยืนหน้ากล้องเพื่อให้เห็นการเคลื่อนไหวของแขนได้อย่างชัดเจน หลังตรงและไหล่ผ่อนคลาย)</p>
+            <p><strong>Starting Position(ตำแหน่งเริ่มต้น):</strong> Place your arm by your side, with your elbow straight and your palm facing forward (this is the neutral position).(วางแขนของคุณไว้ข้างตัว โดยให้ข้อศอกตรงและฝ่ามือหันไปข้างหน้า (นี่คือตำแหน่งที่เป็นกลาง))</p>
+            <p>Slowly bend your elbow to bring your hand toward your shoulder while keeping your upper arm still. Focus on smooth and controlled motion.(ค่อยๆ งอข้อศอกเพื่อนำมือเข้าหาไหล่โดยให้แขนส่วนบนนิ่งไว้ เน้นการเคลื่อนไหวที่นุ่มนวลและควบคุมได้)</p>
+            <p><strong>Repetition and Focus(การทำซ้ำและการโฟกัส):</strong> Repeat this movement for the specified number of repetitions. Concentrate on moving slowly and with control, and ensure that both arms (if applicable) are performing the same movement symmetrically.(ทำซ้ำการเคลื่อนไหวนี้ตามจำนวนครั้งที่กำหนด จดจ่อกับการเคลื่อนไหวช้าๆ และควบคุม และให้แน่ใจว่าแขนทั้งสองข้าง (ถ้ามี) ทำการเคลื่อนไหวแบบเดียวกันอย่างสมมาตร)</p>
+        </div>
+        
+        <!-- Video and Canvas for Pose Estimation -->
+        <div id="video-container">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="output"></canvas>
+        </div>
+    </div>
+    
+    <!-- Reset Button -->
+    <button id="reset-button">Reset Counter</button>
+    
+    <!-- Audio -->
+    <audio id="beep-sound" src="beep.mp3"></audio>
+
+    <!-- Script Includes -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+    <script src="script.js"></script>
 </body>
 </html>
