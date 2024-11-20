@@ -1,95 +1,102 @@
-let video;
-let poseNet;
-let poses = [];
-let count = 0;
-let stage = 'down';  // Initial stage
+const video = document.getElementById('video');
+const canvas = document.getElementById('output');
+const ctx = canvas.getContext('2d');
+const resetButton = document.getElementById('reset-button');
 
-function setup() {
-  createCanvas(640, 480);
-  video = createCapture(VIDEO);
-  video.size(width, height);
-  video.hide();
+let counter = 0;  // Counter for repetitions
+let stage = "up";  // Initial stage
 
-  poseNet = ml5.poseNet(video, modelReady);
-  poseNet.on('pose', function(results) {
-    poses = results;
-  });
+resetButton.addEventListener('click', () => {
+    counter = 0;  // Reset the counter
+    stage = "up";  // Reset the stage
+});
 
-  // Attach event listener to the reset button
-  document.getElementById('resetButton').addEventListener('click', resetCount);
+async function setupCamera() {
+    video.width = 640;
+    video.height = 480;
+    canvas.width = 640;
+    canvas.height = 480;
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+        video: true
+    });
+    video.srcObject = stream;
+
+    return new Promise((resolve) => {
+        video.onloadedmetadata = () => {
+            resolve(video);
+        };
+    });
 }
 
-function modelReady() {
-  console.log('PoseNet Ready');
-}
+async function loadAndEstimatePoses() {
+    const detectorConfig = {
+        modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING
+    };
+    const detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
 
-function draw() {
-  background(255); // Clear the background
-  translate(width, 0); // Move the origin to the right edge of the canvas
-  scale(-1, 1); // Flip the canvas horizontally
-  image(video, 0, 0, width, height); // Draw the video
+    async function detectPose() {
+        const poses = await detector.estimatePoses(video);
 
-  if (poses.length > 0) {
-    let pose = poses[0].pose;
-    let landmarks = pose.keypoints;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    try {
-      let shoulder = [landmarks[5].position.x, landmarks[5].position.y]; // LEFT_SHOULDER
-      let elbow = [landmarks[7].position.x, landmarks[7].position.y]; // LEFT_ELBOW
-      let wrist = [landmarks[9].position.x, landmarks[9].position.y]; // LEFT_WRIST
+        poses.forEach(pose => {
+            if (pose.keypoints) {
+                pose.keypoints.forEach(keypoint => {
+                    if (keypoint.score > 0.5) {  // Only show keypoints with enough confidence
+                        const {x, y} = keypoint;
+                        ctx.beginPath();
+                        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                        ctx.fillStyle = 'red';
+                        ctx.fill();
+                    }
+                });
 
-      let angle = calculateAngle(shoulder, elbow, wrist);
+                // Handle the counting logic
+                if (pose.keypoints.length >= 11) {  // Ensure keypoints are available
+                    const shoulder = pose.keypoints[5];  // Left shoulder
+                    const elbow = pose.keypoints[7];     // Left elbow
+                    const wrist = pose.keypoints[9];     // Left wrist
 
-      fill(255, 255, 255);
-      textSize(16);
-      textAlign(CENTER, CENTER);
-      text(angle.toFixed(2), elbow[0], elbow[1]);
+                    if (shoulder && elbow && wrist) {
+                        const angle = calculateAngle(shoulder, elbow, wrist);
 
-      // Counting logic
-      if (angle > 160) {
-        stage = 'down';
-      }
-      
-      if (angle < 30 && stage === 'down') {
-        stage = 'up';
-        count++;
-        updateCount();
-      }
-    } catch (error) {
-      console.error(error);
+                        // Display angle on canvas
+                        ctx.fillStyle = 'white';
+                        ctx.font = '18px Arial';
+                        ctx.fillText(`Angle: ${Math.round(angle)}`, elbow.x, elbow.y - 20);
+
+                        // Counting logic for "up" and "down" stages
+                        if (angle > 160) {
+                            stage = "down";
+                        }
+                        if (angle < 30 && stage === 'down') {
+                            stage = "up";
+                            counter++;
+                        }
+
+                        // Display counter and stage on canvas
+                        ctx.fillStyle = 'yellow';
+                        ctx.font = '24px Arial';
+                        ctx.fillText(`Reps: ${counter}`, 10, 30);
+                        ctx.fillText(`Stage: ${stage}`, 10, 60);
+                    }
+                }
+            }
+        });
+
+        requestAnimationFrame(detectPose);
     }
 
-    drawSkeleton(poses);
-  }
+    detectPose();
 }
 
 function calculateAngle(a, b, c) {
-  let radians = Math.atan2(c[1] - b[1], c[0] - b[0]) - Math.atan2(a[1] - b[1], a[0] - b[0]);
-  let angle = Math.abs(radians * 180.0 / Math.PI);
-  if (angle > 180.0) {
-    angle = 360.0 - angle;
-  }
-  return angle;
+    const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
+    let angle = Math.abs((radians * 180.0) / Math.PI);
+    if (angle > 180.0) angle = 360 - angle;
+    return angle;
 }
 
-function updateCount() {
-  document.getElementById('count').innerText = count;
-}
-
-function resetCount() {
-  count = 0;
-  stage = 'down';
-  updateCount();
-}
-
-function drawSkeleton(poses) {
-  for (let i = 0; i < poses.length; i++) {
-    let skeleton = poses[i].skeleton;
-    for (let j = 0; j < skeleton.length; j++) {
-      let partA = skeleton[j][0];
-      let partB = skeleton[j][1];
-      stroke(255, 0, 0);
-      line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
-    }
-  }
-}
+setupCamera().then(loadAndEstimatePoses);
