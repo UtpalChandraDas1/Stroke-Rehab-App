@@ -1,40 +1,40 @@
 let score = 0;
 let errors = 0;
-let beeCount = 0;
+let MosquitoCount = 0;
 let gameInterval;
 let spawnInterval;
 let gameTimerInterval;
 let startTime;
-let beeSpeed = 2000; // Default speed in milliseconds
-let beeNumber = 5; // Default number of bees
+let MosquitoSpeed = 2000; // Default speed in milliseconds
+let MosquitoNumber = 5; // Default number of Mosquitos
 let gameTime = 0;
 
 document.getElementById("startButton").addEventListener("click", startGame);
 document.getElementById("stopButton").addEventListener("click", stopGame);
 
 function startGame() {
-    beeNumber = parseInt(document.getElementById("beeNumber").value) || 5;
-    beeSpeed = parseInt(document.getElementById("beeSpeed").value) || 2000;
+    MosquitoNumber = parseInt(document.getElementById("MosquitoNumber").value) || 5;
+    MosquitoSpeed = parseInt(document.getElementById("MosquitoSpeed").value) || 2000;
     resetGame();
     document.getElementById("startButton").style.display = "none";
     document.getElementById("stopButton").style.display = "inline";
 
-    for (let i = 0; i < beeNumber; i++) {
-        spawnBees();
+    for (let i = 0; i < MosquitoNumber; i++) {
+        spawnMosquitos();
     }
-    gameInterval = setInterval(spawnBees, beeSpeed); // Controls bee spawning frequency
+    gameInterval = setInterval(spawnMosquitos, MosquitoSpeed); // Controls Mosquito spawning frequency
     gameTimerInterval = setInterval(updateTimer, 1000); // Timer updates every second
 }
 
 function resetGame() {
     score = 0;
     errors = 0;
-    beeCount = 0;
+    MosquitoCount = 0;
     gameTime = 0;
     document.getElementById("score").innerText = score;
     document.getElementById("reactionTime").innerText = 0;
     document.getElementById("errors").innerText = errors;
-    document.getElementById("beeCount").innerText = beeCount;
+    document.getElementById("MosquitoCount").innerText = MosquitoCount;
     document.getElementById("gameTimer").innerText = gameTime;
     clearInterval(gameInterval);
     clearInterval(spawnInterval);
@@ -42,41 +42,41 @@ function resetGame() {
     document.getElementById("gameArea").innerHTML = "";
 }
 
-function spawnBees() {
+function spawnMosquitos() {
     const gameArea = document.getElementById("gameArea");
-    const bee = document.createElement("div");
-    bee.className = "bee";
-    bee.style.top = `${Math.random() * (gameArea.offsetHeight - 40)}px`;
-    bee.style.left = `${Math.random() * (gameArea.offsetWidth - 40)}px`;
+    const Mosquito = document.createElement("div");
+    Mosquito.className = "Mosquito";
+    Mosquito.style.top = `${Math.random() * (gameArea.offsetHeight - 40)}px`;
+    Mosquito.style.left = `${Math.random() * (gameArea.offsetWidth - 40)}px`;
 
-    // Add updated bee image
-    const beeImage = document.createElement("img");
-    beeImage.src = "https://t4.ftcdn.net/jpg/05/86/40/81/240_F_586408183_1bYuLfonSdgYLd8FiJ6z9opw8y4pU1LU.jpg";
-    bee.appendChild(beeImage);
+    // Add updated Mosquito image
+    const MosquitoImage = document.createElement("img");
+    MosquitoImage.src = "https://t4.ftcdn.net/jpg/05/86/40/81/240_F_586408183_1bYuLfonSdgYLd8FiJ6z9opw8y4pU1LU.jpg";
+    Mosquito.appendChild(MosquitoImage);
 
-    beeCount++;
-    document.getElementById("beeCount").innerText = beeCount;
+    MosquitoCount++;
+    document.getElementById("MosquitoCount").innerText = MosquitoCount;
 
-    bee.addEventListener("click", () => hitBee(bee));
+    Mosquito.addEventListener("click", () => hitMosquito(Mosquito));
     startTime = new Date().getTime();
 
-    gameArea.appendChild(bee);
+    gameArea.appendChild(Mosquito);
 
     spawnInterval = setTimeout(() => {
-        if (document.body.contains(bee)) {
-            gameArea.removeChild(bee);
+        if (document.body.contains(Mosquito)) {
+            gameArea.removeChild(Mosquito);
             errors++;
             document.getElementById("errors").innerText = errors;
         }
-    }, beeSpeed); // Bee lifespan before disappearing
+    }, MosquitoSpeed); // Mosquito lifespan before disappearing
 }
 
-function hitBee(bee) {
+function hitMosquito(Mosquito) {
     const reactionTime = new Date().getTime() - startTime;
     document.getElementById("reactionTime").innerText = reactionTime;
     score++;
     document.getElementById("score").innerText = score;
-    bee.remove();
+    Mosquito.remove();
 }
 
 function stopGame() {
