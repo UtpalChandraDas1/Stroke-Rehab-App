@@ -5,9 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pose Estimation for Left Hip Flexion</title>
     <link rel="stylesheet" href="styles33.css">
+    <style>
+        /* Adjusted CSS to resize the instructions box and prevent overlap */
+        #instructions {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 250px; /* Reduced width to prevent overlap */
+            max-height: 90vh; /* Ensures the box doesn't extend too far vertically */
+            overflow-y: auto; /* Adds scroll if content exceeds box height */
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        #instructions h2 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        #instructions p {
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Pose Estimation Web Application: Left Hip Flexion</h1>
+    <h1> Left Hip Flexion(การงอสะโพกซ้าย)</h1>
+
+    <!-- Exercise Instructions Section -->
+    <section id="instructions">
+        <h2>Exercise Instructions(คำแนะนำการออกกำลังกาย)</h2>
+        <p>
+            <strong>Starting Position(ตำแหน่งเริ่มต้น):</strong><br>
+            Stand upright with your feet hip-width apart. Place your hands on your hips or hold them out to the sides for balance(ยืนตัวตรงโดยให้เท้ากว้างเท่ากับสะโพก วางมือบนสะโพกหรือยื่นออกไปด้านข้างเพื่อทรงตัว).
+        </p>
+        <p>
+            <strong>Performing the Hip Flexion(การทำท่า Hip Flexion):</strong><br>
+            1. Shift your weight onto one leg, keeping that leg straight but not locked(ถ่ายน้ำหนักไปที่ขาข้างเดียว โดยให้ขาตรงแต่ไม่ล็อค).<br>
+            2. Slowly lift the opposite knee towards your chest, bending it to a 90-degree angle or as far as comfortably possible.(ยกเข่าข้างตรงข้ามขึ้นมาช้าๆ เข้าหาหน้าอก โดยงอเข่าเป็นมุม 90 องศา หรือให้มากที่สุดเท่าที่จะทำได้อย่างสบาย)<br>
+            3. Hold the position briefly (1-2 seconds), then lower your leg back to the starting position(ค้างตำแหน่งไว้สั้นๆ (1-2 วินาที) จากนั้นลดขาลงสู่ตำแหน่งเริ่มต้น).
+        </p>
+    </section>
+
     <video id="video" autoplay playsinline></video>
     <canvas id="output"></canvas>
     <button id="reset-button">Reset Counter</button> <!-- New Reset Button -->
