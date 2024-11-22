@@ -1,115 +1,105 @@
-let video;
-let poseNet;
-let poses = [];
-let count = 0;
-let stage = 'down';  // Initial stage
+const video = document.getElementById('video');
+const canvas = document.getElementById('output');
+const ctx = canvas.getContext('2d');
+const resetButton = document.getElementById('reset');
 
-function setup() {
-  createCanvas(640, 480).parent('video-container');
-  video = createCapture(VIDEO);
-  video.size(width, height);
+let counter = 0; // Counter for repetitions
+let stage = "up"; // Initial stage
 
-  // Create a new poseNet method
-  poseNet = ml5.poseNet(video, modelReady);
-  poseNet.on('pose', function(results) {
-    poses = results;
-  });
+async function setupCamera() {
+    video.width = 640;
+    video.height = 480;
+    canvas.width = 640;
+    canvas.height = 480;
 
-  video.hide();
+    const stream = await navigator.mediaDevices.getUserMedia({
+        video: true
+    });
+    video.srcObject = stream;
 
-  // Attach event listener to the reset button
-  document.getElementById('resetButton').addEventListener('click', resetCount);
+    return new Promise((resolve) => {
+        video.onloadedmetadata = () => {
+            resolve(video);
+        };
+    });
 }
 
-function modelReady() {
-  console.log('Model Loaded');
-}
+async function loadAndRunMoveNet() {
+    const detector = await poseDetection.createDetector(
+        poseDetection.SupportedModels.MoveNet,
+        {
+            modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
+        }
+    );
 
-function draw() {
-  image(video, 0, 0, width, height);
-  
-  // Draw skeleton and keypoints
-  drawKeypoints();
-  drawSkeleton();
-  
-  // For one pose only (use a for loop for multiple poses!)
-  if (poses.length > 0) {
-    let pose = poses[0].pose;
+    async function detectPose() {
+        const poses = await detector.estimatePoses(video);
 
-    // Extract coordinates
-    let hip = pose.rightHip;
-    let knee = pose.rightKnee;
-    let ankle = pose.rightAnkle;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    if (hip && knee && ankle) {
-      // Calculate the angle
-      let angle = calculateAngle(hip, knee, ankle);
+        poses.forEach((pose) => {
+            if (pose.keypoints) {
+                pose.keypoints.forEach((keypoint) => {
+                    if (keypoint.score > 0.5) {
+                        const { x, y } = keypoint;
+                        ctx.beginPath();
+                        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                        ctx.fillStyle = 'red';
+                        ctx.fill();
+                    }
+                });
 
-      // Display the angle on the canvas
-      fill(255);
-      noStroke();
-      textSize(32);
-      text(angle.toFixed(2), knee.x, knee.y);
+                // Get keypoints for right hip flexion
+                const hip = pose.keypoints[12]; // Right hip
+                const knee = pose.keypoints[14]; // Right knee
+                const ankle = pose.keypoints[16]; // Right ankle
 
-      // Count if the angle follows the required pattern
-      if (angle > 160) {
-        stage = 'down';
-      }
-      
-      if (angle < 60 && stage === 'down') {
-        stage = 'up';
-        count++;
-        updateCount();
-      }
+                if (hip && knee && ankle) {
+                    const angle = calculateAngle(hip, knee, ankle);
+
+                    // Display the angle on the canvas
+                    ctx.fillStyle = 'white';
+                    ctx.font = '18px Arial';
+                    ctx.fillText(`Knee Angle: ${Math.round(angle)}°`, knee.x, knee.y - 20);
+
+                    // Counting logic
+                    if (angle > 160) {
+                        stage = "down";
+                    }
+                    if (angle < 30 && stage === "down") {
+                        stage = "up";
+                        counter++;
+                    }
+
+                    // Display counter and stage
+                    ctx.fillStyle = 'yellow';
+                    ctx.font = '24px Arial';
+                    ctx.fillText(`Reps: ${counter}`, 10, 30);
+                    ctx.fillText(`Stage: ${stage}`, 10, 60);
+                }
+            }
+        });
+
+        requestAnimationFrame(detectPose);
     }
-  }
+
+    detectPose();
 }
 
 function calculateAngle(a, b, c) {
-  let radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
-  let angle = Math.abs(radians * 180.0 / Math.PI);
-
-  if (angle > 180.0) {
-    angle = 360 - angle;
-  }
-
-  return angle;
+    const radians =
+        Math.atan2(c.y - b.y, c.x - b.x) -
+        Math.atan2(a.y - b.y, a.x - b.x);
+    let angle = Math.abs((radians * 180.0) / Math.PI);
+    if (angle > 180.0) angle = 360 - angle;
+    return angle;
 }
 
-function updateCount() {
-  document.getElementById('count').innerText = count;
-}
+// Reset button functionality
+resetButton.addEventListener('click', () => {
+    counter = 0;
+    stage = "up";
+});
 
-function resetCount() {
-  count = 0;
-  stage = 'down';
-  updateCount();
-}
-
-// Draw ellipses over the detected keypoints
-function drawKeypoints() {
-  for (let i = 0; i < poses.length; i++) {
-    let pose = poses[i].pose;
-    for (let j = 0; j < pose.keypoints.length; j++) {
-      let keypoint = pose.keypoints[j];
-      if (keypoint.score > 0.2) {
-        fill(255, 0, 0);
-        noStroke();
-        ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
-      }
-    }
-  }
-}
-
-// Draw the skeleton
-function drawSkeleton() {
-  for (let i = 0; i < poses.length; i++) {
-    let skeleton = poses[i].skeleton;
-    for (let j = 0; j < skeleton.length; j++) {
-      let partA = skeleton[j][0];
-      let partB = skeleton[j][1];
-      stroke(255, 0, 0);
-      line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
-    }
-  }
-}
+setupCamera().then(loadAndRunMoveNet);
