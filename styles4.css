@@ -1,105 +1,75 @@
-const video = document.getElementById('video');
-const canvas = document.getElementById('output');
-const ctx = canvas.getContext('2d');
-const resetButton = document.getElementById('reset');
-
-let counter = 0; // Counter for repetitions
-let stage = "up"; // Initial stage
-
-async function setupCamera() {
-    video.width = 640;
-    video.height = 480;
-    canvas.width = 640;
-    canvas.height = 480;
-
-    const stream = await navigator.mediaDevices.getUserMedia({
-        video: true
-    });
-    video.srcObject = stream;
-
-    return new Promise((resolve) => {
-        video.onloadedmetadata = () => {
-            resolve(video);
-        };
-    });
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-async function loadAndRunMoveNet() {
-    const detector = await poseDetection.createDetector(
-        poseDetection.SupportedModels.MoveNet,
-        {
-            modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
-        }
-    );
-
-    async function detectPose() {
-        const poses = await detector.estimatePoses(video);
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        poses.forEach((pose) => {
-            if (pose.keypoints) {
-                pose.keypoints.forEach((keypoint) => {
-                    if (keypoint.score > 0.5) {
-                        const { x, y } = keypoint;
-                        ctx.beginPath();
-                        ctx.arc(x, y, 5, 0, 2 * Math.PI);
-                        ctx.fillStyle = 'red';
-                        ctx.fill();
-                    }
-                });
-
-                // Get keypoints for right hip flexion
-                const hip = pose.keypoints[12]; // Right hip
-                const knee = pose.keypoints[14]; // Right knee
-                const ankle = pose.keypoints[16]; // Right ankle
-
-                if (hip && knee && ankle) {
-                    const angle = calculateAngle(hip, knee, ankle);
-
-                    // Display the angle on the canvas
-                    ctx.fillStyle = 'white';
-                    ctx.font = '18px Arial';
-                    ctx.fillText(`Knee Angle: ${Math.round(angle)}°`, knee.x, knee.y - 20);
-
-                    // Counting logic
-                    if (angle > 160) {
-                        stage = "down";
-                    }
-                    if (angle < 30 && stage === "down") {
-                        stage = "up";
-                        counter++;
-                    }
-
-                    // Display counter and stage
-                    ctx.fillStyle = 'yellow';
-                    ctx.font = '24px Arial';
-                    ctx.fillText(`Reps: ${counter}`, 10, 30);
-                    ctx.fillText(`Stage: ${stage}`, 10, 60);
-                }
-            }
-        });
-
-        requestAnimationFrame(detectPose);
-    }
-
-    detectPose();
+.container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
 }
 
-function calculateAngle(a, b, c) {
-    const radians =
-        Math.atan2(c.y - b.y, c.x - b.x) -
-        Math.atan2(a.y - b.y, a.x - b.x);
-    let angle = Math.abs((radians * 180.0) / Math.PI);
-    if (angle > 180.0) angle = 360 - angle;
-    return angle;
+.instructions {
+    width: 35%;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-// Reset button functionality
-resetButton.addEventListener('click', () => {
-    counter = 0;
-    stage = "up";
-});
+.instructions h2 {
+    margin-top: 0;
+    color: #333;
+}
 
-setupCamera().then(loadAndRunMoveNet);
+.instructions h3 {
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.instructions p, .instructions ol {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.exercise-area {
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+video {
+    display: none; /* Hide video, only show canvas */
+}
+
+canvas {
+    border: 2px solid black;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.controls button:hover {
+    background-color: #0056b3;
+}
