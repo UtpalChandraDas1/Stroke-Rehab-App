@@ -3,12 +3,12 @@ const canvas = document.getElementById('output');
 const ctx = canvas.getContext('2d');
 const resetButton = document.getElementById('reset-button');
 
-let counter = 0;  // Counter for repetitions
-let stage = "up";  // Initial stage
+let counter = 0; // Counter for repetitions
+let stage = "up"; // Initial stage
 
 resetButton.addEventListener('click', () => {
-    counter = 0;  // Reset the counter
-    stage = "up";  // Reset the stage
+    counter = 0; // Reset the counter
+    stage = "up"; // Reset the stage
 });
 
 async function setupCamera() {
@@ -30,10 +30,14 @@ async function setupCamera() {
 }
 
 async function loadAndEstimatePoses() {
-    const detectorConfig = {
-        modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING
-    };
-    const detector = await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet, detectorConfig);
+    // Load BlazePose model for OpenPose-like detection
+    const detector = await poseDetection.createDetector(
+        poseDetection.SupportedModels.BlazePose, 
+        {
+            runtime: 'tfjs',
+            modelType: 'full', // Use "full" for maximum accuracy
+        }
+    );
 
     async function detectPose() {
         const poses = await detector.estimatePoses(video);
@@ -41,11 +45,11 @@ async function loadAndEstimatePoses() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        poses.forEach(pose => {
+        poses.forEach((pose) => {
             if (pose.keypoints) {
-                pose.keypoints.forEach(keypoint => {
-                    if (keypoint.score > 0.5) {  // Only show keypoints with enough confidence
-                        const {x, y} = keypoint;
+                pose.keypoints.forEach((keypoint) => {
+                    if (keypoint.score > 0.5) {
+                        const { x, y } = keypoint;
                         ctx.beginPath();
                         ctx.arc(x, y, 5, 0, 2 * Math.PI);
                         ctx.fillStyle = 'red';
@@ -53,35 +57,33 @@ async function loadAndEstimatePoses() {
                     }
                 });
 
-                // Handle the counting logic for right-hand elbow flexion
-                if (pose.keypoints.length >= 11) {  // Ensure keypoints are available
-                    const shoulder = pose.keypoints[6];  // Right shoulder (updated from left shoulder)
-                    const elbow = pose.keypoints[8];     // Right elbow (updated from left elbow)
-                    const wrist = pose.keypoints[10];    // Right wrist (updated from left wrist)
+                // Handle the counting logic
+                const shoulder = pose.keypoints.find((k) => k.name === 'right_shoulder');
+                const elbow = pose.keypoints.find((k) => k.name === 'right_elbow');
+                const wrist = pose.keypoints.find((k) => k.name === 'right_wrist');
 
-                    if (shoulder && elbow && wrist) {
-                        const angle = calculateAngle(shoulder, elbow, wrist);
+                if (shoulder && elbow && wrist) {
+                    const angle = calculateAngle(shoulder, elbow, wrist);
 
-                        // Display angle on canvas
-                        ctx.fillStyle = 'white';
-                        ctx.font = '18px Arial';
-                        ctx.fillText(`Angle: ${Math.round(angle)}`, elbow.x, elbow.y - 20);
+                    // Display angle on canvas
+                    ctx.fillStyle = 'white';
+                    ctx.font = '18px Arial';
+                    ctx.fillText(`Angle: ${Math.round(angle)}`, elbow.x, elbow.y - 20);
 
-                        // Counting logic for "up" and "down" stages
-                        if (angle > 160) {
-                            stage = "down";
-                        }
-                        if (angle < 30 && stage === 'down') {
-                            stage = "up";
-                            counter++;
-                        }
-
-                        // Display counter and stage on canvas
-                        ctx.fillStyle = 'yellow';
-                        ctx.font = '24px Arial';
-                        ctx.fillText(`Reps: ${counter}`, 10, 30);
-                        ctx.fillText(`Stage: ${stage}`, 10, 60);
+                    // Counting logic for "up" and "down" stages
+                    if (angle > 160) {
+                        stage = "down";
                     }
+                    if (angle < 30 && stage === "down") {
+                        stage = "up";
+                        counter++;
+                    }
+
+                    // Display counter and stage on canvas
+                    ctx.fillStyle = 'yellow';
+                    ctx.font = '24px Arial';
+                    ctx.fillText(`Reps: ${counter}`, 10, 30);
+                    ctx.fillText(`Stage: ${stage}`, 10, 60);
                 }
             }
         });
