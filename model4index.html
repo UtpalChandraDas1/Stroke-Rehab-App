@@ -1,24 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hip Flexion Exercise</title>
-  <link rel="stylesheet" href="styles3.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-  <script src="https://unpkg.com/ml5@0.6.0/dist/ml5.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pose Estimation with OpenPose</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Standing Right Hip Flexion</h1>
-  <div id="exercise-container">
-    <div id="controls">
-      <button id="resetButton">Reset Count</button>
-      <p>Count: <span id="count">0</span></p>
+    <div class="container">
+        <div class="instructions">
+            <h2>Exercise Instructions (คำแนะนำการออกกำลังกาย)</h2>
+            <h3>Starting Position (ตำแหน่งเริ่มต้น):</h3>
+            <p>Stand upright with your feet hip-width apart. Place your hands on your hips or hold them out to the sides for balance.<br>
+            (ยืนตัวตรงโดยให้เท้ากว้างเท่ากับสะโพก วางมือบนสะโพกหรือยื่นออกไปด้านข้างเพื่อทรงตัว)</p>
+            
+            <h3>Performing the Hip Flexion (การทำท่า Hip Flexion):</h3>
+            <ol>
+                <li>Shift your weight onto one leg, keeping that leg straight but not locked.<br>
+                (ถ่ายน้ำหนักไปที่ขาข้างเดียว โดยให้ขาตรงแต่ไม่ล็อค)</li>
+                <li>Slowly lift the opposite knee towards your chest, bending it to a 90-degree angle or as far as comfortably possible.<br>
+                (ยกเข่าข้างตรงข้ามขึ้นมาช้าๆ เข้าหาหน้าอก โดยงอเข่าเป็นมุม 90 องศา หรือให้มากที่สุดเท่าที่จะทำได้อย่างสบาย)</li>
+                <li>Hold the position briefly (1-2 seconds), then lower your leg back to the starting position.<br>
+                (ค้างตำแหน่งไว้สั้นๆ (1-2 วินาที) จากนั้นลดขาลงสู่ตำแหน่งเริ่มต้น)</li>
+            </ol>
+        </div>
+        <div class="exercise-area">
+            <h1>Standing Right Hip Flexion</h1>
+            <video id="video" autoplay playsinline></video>
+            <canvas id="output"></canvas>
+            <div class="controls">
+                <button id="reset">Reset Counter</button>
+            </div>
+        </div>
     </div>
-    <div id="video-container">
-      <video id="video" width="640" height="480"></video>
-    </div>
-  </div>
-  <script src="sketch4.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+    <script src="script.js"></script>
 </body>
 </html>
