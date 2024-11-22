@@ -24,11 +24,13 @@ async function setupCamera() {
     });
 }
 
-async function loadAndRunMoveNet() {
+async function loadAndRunOpenPose() {
     const detector = await poseDetection.createDetector(
-        poseDetection.SupportedModels.MoveNet,
+        poseDetection.SupportedModels.BlazePose,
         {
-            modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
+            runtime: 'tfjs',
+            enableSmoothing: true,
+            modelType: 'full',
         }
     );
 
@@ -51,9 +53,9 @@ async function loadAndRunMoveNet() {
                 });
 
                 // Get keypoints for right hip flexion
-                const hip = pose.keypoints[12]; // Right hip
-                const knee = pose.keypoints[14]; // Right knee
-                const ankle = pose.keypoints[16]; // Right ankle
+                const hip = pose.keypoints.find(k => k.name === 'right_hip');
+                const knee = pose.keypoints.find(k => k.name === 'right_knee');
+                const ankle = pose.keypoints.find(k => k.name === 'right_ankle');
 
                 if (hip && knee && ankle) {
                     const angle = calculateAngle(hip, knee, ankle);
@@ -102,4 +104,4 @@ resetButton.addEventListener('click', () => {
     stage = "up";
 });
 
-setupCamera().then(loadAndRunMoveNet);
+setupCamera().then(loadAndRunOpenPose);
