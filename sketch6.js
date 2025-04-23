@@ -46,8 +46,8 @@ function spawnMosquitos() {
     const gameArea = document.getElementById("gameArea");
     const Mosquito = document.createElement("div");
     Mosquito.className = "Mosquito";
-    Mosquito.style.top = `${Math.random() * (gameArea.offsetHeight - 40)}px`;
-    Mosquito.style.left = `${Math.random() * (gameArea.offsetWidth - 40)}px`;
+    Mosquito.style.top = `${Math.random() * (gameArea.offsetHeight - 10)}px`;
+    Mosquito.style.left = `${Math.random() * (gameArea.offsetWidth - 10)}px`;
 
     // Add updated Mosquito image
     const MosquitoImage = document.createElement("img");
