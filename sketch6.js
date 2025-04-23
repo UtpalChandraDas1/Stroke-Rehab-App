@@ -51,7 +51,7 @@ function spawnMosquitos() {
 
     // Add updated Mosquito image
     const MosquitoImage = document.createElement("img");
-    MosquitoImage.src = "https://t4.ftcdn.net/jpg/05/86/40/81/240_F_586408183_1bYuLfonSdgYLd8FiJ6z9opw8y4pU1LU.jpg";
+    MosquitoImage.src = "https://pngtree.com/freepng/cartoon-mosquito_6944825.html";
     Mosquito.appendChild(MosquitoImage);
 
     MosquitoCount++;
